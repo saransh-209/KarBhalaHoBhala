@@ -20,7 +20,7 @@ type HelpRequest = { id: number; patient_name: string; guardian_name: string; ph
 type EventItem = { id: number; title: string; description: string; location: string; event_date: string; event_time: string; image_url: string; latitude?: number | null; longitude?: number | null };
 
 // 👇 Apna WhatsApp group invite link yahan daalo
-const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/Lbk8tTljdfNIiFNytt9Thr";
+const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/Lbk*TljdfNliFNytt9Thr";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -74,14 +74,16 @@ export default function AdminDashboard() {
             const Icon = tab.icon;
             return (
               <button key={tab.id} onClick={() => setActiveTab(tab.id as Tab)}
-                className={`relative flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all ${activeTab === tab.id
+                className={`relative flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all ${
+                  activeTab === tab.id
                     ? "bg-orange-600 text-white shadow-md"
                     : "bg-white text-gray-600 border border-gray-200 hover:border-orange-300"
-                  }`}>
+                }`}>
                 <Icon size={16} />{tab.label}
                 {tab.badge !== undefined && tab.badge > 0 && (
-                  <span className={`text-xs font-bold rounded-full px-2 py-0.5 ${activeTab === tab.id ? "bg-white text-orange-600" : "bg-orange-600 text-white"
-                    }`}>
+                  <span className={`text-xs font-bold rounded-full px-2 py-0.5 ${
+                    activeTab === tab.id ? "bg-white text-orange-600" : "bg-orange-600 text-white"
+                  }`}>
                     {tab.badge}
                   </span>
                 )}
@@ -163,8 +165,9 @@ function StatsEditor() {
               </div>
             </div>
             <button onClick={() => save(stat)}
-              className={`flex items-center gap-2 px-5 py-3 rounded-xl transition shrink-0 ${saved === stat.id ? "bg-green-500 text-white" : "bg-orange-600 text-white hover:bg-orange-700"
-                }`}>
+              className={`flex items-center gap-2 px-5 py-3 rounded-xl transition shrink-0 ${
+                saved === stat.id ? "bg-green-500 text-white" : "bg-orange-600 text-white hover:bg-orange-700"
+              }`}>
               {saved === stat.id ? <><CheckCircle size={16} /> Saved!</> : saving === stat.id ? "Saving..." : <><Save size={16} /> Save</>}
             </button>
           </div>
@@ -186,7 +189,14 @@ function GalleryEditor() {
     if (data) setItems(data);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+    const channel = supabase
+      .channel("admin-gallery-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "gallery" }, load)
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -221,7 +231,7 @@ function GalleryEditor() {
     <div>
       <div className="mb-6">
         <h2 className="text-2xl font-bold">Manage Gallery</h2>
-        <p className="text-gray-500 text-sm mt-1">Upload images — they'll automatically show up in the gallery on the website.</p>
+        <p className="text-gray-500 text-sm mt-1">Upload images — they will automatically show up in the gallery on the website.</p>
       </div>
 
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 items-start md:items-center">
@@ -234,8 +244,9 @@ function GalleryEditor() {
             <option>Volunteers</option>
           </select>
         </div>
-        <label className={`flex items-center gap-2 px-6 py-3 rounded-xl cursor-pointer transition mt-auto ${uploading ? "bg-gray-300 cursor-not-allowed" : "bg-orange-600 text-white hover:bg-orange-700"
-          }`}>
+        <label className={`flex items-center gap-2 px-6 py-3 rounded-xl cursor-pointer transition mt-auto ${
+          uploading ? "bg-gray-300 cursor-not-allowed" : "bg-orange-600 text-white hover:bg-orange-700"
+        }`}>
           <Upload size={16} />
           {uploading ? "Uploading..." : "Upload Image"}
           <input type="file" accept="image/*" className="hidden" onChange={uploadImage} disabled={uploading} />
@@ -288,7 +299,14 @@ function TestimonialsEditor() {
     if (data) setItems(data);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+    const channel = supabase
+      .channel("admin-testimonials-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "testimonials" }, load)
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -364,8 +382,9 @@ function TestimonialsEditor() {
               {form.image_url && (
                 <img src={form.image_url} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-gray-200" />
               )}
-              <label className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition text-sm font-medium ${uploading ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-orange-50 text-orange-600 hover:bg-orange-100"
-                }`}>
+              <label className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition text-sm font-medium ${
+                uploading ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-orange-50 text-orange-600 hover:bg-orange-100"
+              }`}>
                 <Upload size={15} />
                 {uploading ? "Uploading..." : form.image_url ? "Change Photo" : "Upload from Computer"}
                 <input type="file" accept="image/*" className="hidden" onChange={uploadImage} disabled={uploading} />
@@ -377,7 +396,7 @@ function TestimonialsEditor() {
                 </button>
               )}
             </div>
-            <p className="text-xs text-gray-400 mt-2">Optional — chhod sakte ho, default image use ho jaayegi.</p>
+            <p className="text-xs text-gray-400 mt-2">Optional — you can skip it, the default image will be used.</p>
           </div>
 
           <div className="flex gap-3 pt-2">
@@ -435,7 +454,25 @@ function SubmissionsViewer() {
     if (data) setHelpRequests(data);
   };
 
-  useEffect(() => { loadVolunteers(); loadHelp(); }, []);
+  useEffect(() => {
+    loadVolunteers();
+    loadHelp();
+
+    const volunteerChannel = supabase
+      .channel("admin-volunteer-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "volunteer_applications" }, loadVolunteers)
+      .subscribe();
+
+    const helpChannel = supabase
+      .channel("admin-help-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "help_requests" }, loadHelp)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(volunteerChannel);
+      supabase.removeChannel(helpChannel);
+    };
+  }, []);
 
   const deleteVolunteer = async (id: number) => {
     setDeleting(id);
@@ -504,8 +541,9 @@ Seva Hi Pooja Hai`;
 
       <div className="flex gap-3 mb-6">
         <button onClick={() => setSubTab("help")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm transition ${subTab === "help" ? "bg-orange-600 text-white" : "bg-white border border-gray-200 text-gray-600 hover:border-orange-300"
-            }`}>
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm transition ${
+            subTab === "help" ? "bg-orange-600 text-white" : "bg-white border border-gray-200 text-gray-600 hover:border-orange-300"
+          }`}>
           <HeartHandshake size={15} /> Help Requests
           {pendingHelp.length > 0 && (
             <span className={`text-xs font-bold rounded-full px-2 py-0.5 ${subTab === "help" ? "bg-white text-orange-600" : "bg-orange-600 text-white"}`}>
@@ -514,8 +552,9 @@ Seva Hi Pooja Hai`;
           )}
         </button>
         <button onClick={() => setSubTab("volunteers")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm transition ${subTab === "volunteers" ? "bg-orange-600 text-white" : "bg-white border border-gray-200 text-gray-600 hover:border-orange-300"
-            }`}>
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm transition ${
+            subTab === "volunteers" ? "bg-orange-600 text-white" : "bg-white border border-gray-200 text-gray-600 hover:border-orange-300"
+          }`}>
           <Inbox size={15} /> Volunteer Applications
           {volunteers.filter((v) => v.status !== "approved").length > 0 && (
             <span className={`text-xs font-bold rounded-full px-2 py-0.5 ${subTab === "volunteers" ? "bg-white text-orange-600" : "bg-orange-600 text-white"}`}>
@@ -530,7 +569,7 @@ Seva Hi Pooja Hai`;
         <div className="space-y-4">
           {helpRequests.length === 0 && (
             <div className="bg-white rounded-2xl p-10 text-center text-gray-400 border border-dashed border-gray-200">
-              No help requests have come in yet.
+              No help request has come in yet.
             </div>
           )}
 
@@ -604,13 +643,6 @@ Seva Hi Pooja Hai`;
       {/* VOLUNTEER APPLICATIONS */}
       {subTab === "volunteers" && (
         <div className="space-y-4">
-          {/* Setup reminder */}
-          {WHATSAPP_GROUP_LINK.includes("your-group-invite-code") && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 text-sm text-yellow-800">
-              ⚠️ <strong>Setup pending:</strong> Apna WhatsApp group invite link <code>admin-dashboard.tsx</code> ke top mein <code>WHATSAPP_GROUP_LINK</code> variable mein daalo.
-              Group banao → "Invite via link" se link copy karo.
-            </div>
-          )}
 
           {volunteers.length === 0 && (
             <div className="bg-white rounded-2xl p-10 text-center text-gray-400 border border-dashed border-gray-200">
@@ -692,7 +724,14 @@ function EventsEditor() {
     if (data) setEvents(data);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+    const channel = supabase
+      .channel("admin-events-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "events" }, load)
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -793,8 +832,8 @@ function EventsEditor() {
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white" />
             </div>
             <p className="text-xs text-gray-500 mt-2">
-              How to get coordinates: <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" className="text-orange-600 underline">Open Google Maps</a>
-               → right-click on the location → click on coordinates (they will be copied) → paste them here (latitude and longitude in separate boxes).
+              How to get coordinates: Open <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" className="text-orange-600 underline">Google Maps</a>
+              → right-click on the location → click on coordinates (they will be copied) → paste them here (latitude and longitude in separate boxes).
             </p>
 
             {form.latitude && form.longitude && (
@@ -809,7 +848,7 @@ function EventsEditor() {
 
           <div>
             <label className="text-xs text-gray-400 font-medium uppercase tracking-wider">Description</label>
-            <textarea placeholder="Details about the event..." rows={3} value={form.description}
+            <textarea placeholder="Event ke baare mein details..." rows={3} value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:outline-none focus:ring-2 focus:ring-orange-300 resize-none" />
           </div>
@@ -821,8 +860,9 @@ function EventsEditor() {
               {form.image_url && (
                 <img src={form.image_url} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-gray-200" />
               )}
-              <label className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition text-sm font-medium ${uploading ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-orange-50 text-orange-600 hover:bg-orange-100"
-                }`}>
+              <label className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition text-sm font-medium ${
+                uploading ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-orange-50 text-orange-600 hover:bg-orange-100"
+              }`}>
                 <Upload size={15} />
                 {uploading ? "Uploading..." : form.image_url ? "Change Photo" : "Upload from Computer"}
                 <input type="file" accept="image/*" className="hidden" onChange={uploadImage} disabled={uploading} />

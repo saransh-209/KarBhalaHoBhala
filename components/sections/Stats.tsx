@@ -19,8 +19,18 @@ export default function Stats() {
   const [stats, setStats] = useState<Stat[]>(fallback);
 
   useEffect(() => {
-    supabase.from("stats").select("*").order("id")
-      .then(({ data }) => { if (data && data.length > 0) setStats(data); });
+    const load = () =>
+      supabase.from("stats").select("*").order("id")
+        .then(({ data }) => { if (data && data.length > 0) setStats(data); });
+
+    load();
+
+    const channel = supabase
+      .channel("stats-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "stats" }, load)
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   // translate labels when language changes

@@ -26,10 +26,26 @@ export default function Gallery() {
   const [lightbox, setLightbox] = useState<GalleryItem | null>(null);
 
   useEffect(() => {
+    let channelRef: any = null;
+
     import("@/lib/supabase").then(({ supabase }) => {
-      supabase.from("gallery").select("*").order("created_at", { ascending: false })
-        .then(({ data }) => { if (data && data.length > 0) setAllImages(data); });
+      const load = () =>
+        supabase.from("gallery").select("*").order("created_at", { ascending: false })
+          .then(({ data }) => { if (data) setAllImages(data.length > 0 ? data : staticImages); });
+
+      load();
+
+      channelRef = supabase
+        .channel("gallery-changes")
+        .on("postgres_changes", { event: "*", schema: "public", table: "gallery" }, load)
+        .subscribe();
     });
+
+    return () => {
+      if (channelRef) {
+        import("@/lib/supabase").then(({ supabase }) => supabase.removeChannel(channelRef));
+      }
+    };
   }, []);
 
   // Close lightbox on Escape

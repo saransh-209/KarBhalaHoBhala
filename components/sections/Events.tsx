@@ -25,13 +25,24 @@ export default function Events() {
   const [openId, setOpenId] = useState<number | null>(null);
 
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    supabase
-      .from("events")
-      .select("*")
-      .gte("event_date", today)
-      .order("event_date", { ascending: true })
-      .then(({ data }) => { if (data) setEvents(data); });
+    const load = () => {
+      const today = new Date().toISOString().split("T")[0];
+      supabase
+        .from("events")
+        .select("*")
+        .gte("event_date", today)
+        .order("event_date", { ascending: true })
+        .then(({ data }) => { if (data) setEvents(data); });
+    };
+
+    load();
+
+    const channel = supabase
+      .channel("events-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "events" }, load)
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   if (events.length === 0) return null;
