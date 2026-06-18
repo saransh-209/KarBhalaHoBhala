@@ -93,7 +93,7 @@ export default function Navbar() {
           <div className="flex flex-col gap-1 pt-2">
             {links.map((item) => (
               <a key={item.href} href={item.href} onClick={(e) => handleNavClick(e, item.href)}
-                className={`px-4 py-3 rounded-xl font-medium transition-colors ${
+                className={`px-4 py-3 rounded-xl font-medium text-base leading-snug transition-colors ${
                   activeSection === item.href.replace("#", "")
                     ? "bg-orange-50 text-orange-600"
                     : "text-gray-700 hover:bg-orange-50 hover:text-orange-600"
@@ -101,7 +101,9 @@ export default function Navbar() {
                 {item.label}
               </a>
             ))}
-            <div className="px-4 py-2"><LanguageSwitcher /></div>
+            <div className="px-4 py-3 flex justify-center">
+              <LanguageSwitcher />
+            </div>
             <a href="#donate" onClick={(e) => handleNavClick(e, "#donate")}
               className="mt-2 bg-orange-600 text-white px-5 py-3 rounded-full font-semibold text-center hover:bg-orange-700 transition">
               {t.nav.donateBtn}

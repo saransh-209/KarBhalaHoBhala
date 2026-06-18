@@ -809,7 +809,7 @@ function EventsEditor() {
 
           <div>
             <label className="text-xs text-gray-400 font-medium uppercase tracking-wider">Description</label>
-            <textarea placeholder="Event ke baare mein details..." rows={3} value={form.description}
+            <textarea placeholder="Details about the event..." rows={3} value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:outline-none focus:ring-2 focus:ring-orange-300 resize-none" />
           </div>

@@ -22,6 +22,7 @@ export default function Events() {
   const { t } = useLang();
   const e = t.events;
   const [events, setEvents] = useState<EventItem[]>([]);
+  const [openId, setOpenId] = useState<number | null>(null);
 
   useEffect(() => {
     const today = new Date().toISOString().split("T")[0];
@@ -64,9 +65,16 @@ export default function Events() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16 items-start">
           {events.map((ev) => {
             const date = formatDate(ev.event_date);
+            const isOpen = openId === ev.id;
+            const hasMap = ev.location || (ev.latitude && ev.longitude);
+
             return (
-              <motion.div key={ev.id} whileHover={{ y: -6 }}
-                className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300">
+              <motion.div
+                key={ev.id}
+                whileHover={{ y: -6 }}
+                onClick={() => hasMap && setOpenId(isOpen ? null : ev.id)}
+                className={`group bg-white rounded-3xl overflow-hidden shadow-sm md:hover:shadow-2xl transition-all duration-300 ${hasMap ? "cursor-pointer" : ""}`}
+              >
 
                 {ev.image_url ? (
                   <img src={ev.image_url} alt={ev.title} className="w-full h-44 object-cover" />
@@ -107,11 +115,19 @@ export default function Events() {
                     )}
                   </div>
 
-                  {/* Map - expands on hover */}
-                  {(ev.location || (ev.latitude && ev.longitude)) && (
-                    <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-in-out">
+                  {/* Map - expands on hover (desktop) or tap (mobile) */}
+                  {hasMap && (
+                    <div
+                      className={`grid transition-all duration-500 ease-in-out
+                        grid-rows-[0fr] md:group-hover:grid-rows-[1fr]
+                        ${isOpen ? "grid-rows-[1fr]" : ""}`}
+                    >
                       <div className="overflow-hidden">
-                        <div className="mt-4 rounded-2xl overflow-hidden border border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-150">
+                        <div
+                          className={`mt-4 rounded-2xl overflow-hidden border border-gray-100 transition-opacity duration-300 delay-150
+                            opacity-0 md:group-hover:opacity-100
+                            ${isOpen ? "opacity-100" : ""}`}
+                        >
                           <iframe
                             src={
                               ev.latitude && ev.longitude
@@ -127,6 +143,12 @@ export default function Events() {
                         </div>
                       </div>
                     </div>
+                  )}
+
+                  {hasMap && (
+                    <p className="md:hidden text-center text-xs text-orange-500 font-medium mt-3">
+                      {isOpen ? "Tap to hide map ▲" : "Tap to view map ▼"}
+                    </p>
                   )}
                 </div>
               </motion.div>
