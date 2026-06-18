@@ -80,20 +80,6 @@ export default function Testimonials() {
               className={`h-2 rounded-full transition-all duration-300 ${i === current ? "bg-orange-600 w-8" : "bg-gray-300 w-2"}`} />
           ))}
         </div>
-
-        <div className="hidden lg:grid lg:grid-cols-3 gap-8 mt-16">
-          {testimonials.slice(0, 3).map((item, i) => (
-            <motion.div key={item.id} whileHover={{ y: -8 }} onClick={() => { setPaused(true); setCurrent(i); }}
-              className={`bg-[#FDF8F2] rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition cursor-pointer ring-2 ${i === current ? "ring-orange-400" : "ring-transparent"}`}>
-              <img src={item.image_url} alt={item.name} className="w-full h-48 object-cover" />
-              <div className="p-6">
-                <h3 className="text-xl font-bold">{item.name}</h3>
-                <p className="text-orange-600 font-medium mt-1 text-sm">{item.role}</p>
-                <p className="text-gray-600 mt-3 text-sm leading-6 line-clamp-3">"{item.story}"</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   );
