@@ -86,14 +86,7 @@ export default function AdminLogin() {
             <p className="text-xs text-gray-500">Admin Panel</p>
           </div>
         </div>
-
-        {/* Case 1: Already running inside the installed app */}
-        {isStandalone && (
-          <div className="mt-6 bg-green-50 text-green-700 text-sm text-center py-2.5 rounded-xl">
-            ✅ Running as installed app
-          </div>
-        )}
-
+        
         {/* Case 2: In a normal browser tab, but app is already installed somewhere */}
         {!isStandalone && relatedApps && (
           <button
