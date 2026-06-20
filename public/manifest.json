@@ -1,0 +1,25 @@
+{
+  "name": "Kar Bhala Ho Bhala — Admin",
+  "short_name": "KBHB Admin",
+  "description": "Admin panel for Kar Bhala Ho Bhala Charitable Trust",
+  "start_url": "/admin",
+  "scope": "/admin",
+  "display": "standalone",
+  "background_color": "#FDF8F2",
+  "theme_color": "#ea580c",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/logo1.png?v=2",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo2.png?v=2",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

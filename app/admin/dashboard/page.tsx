@@ -10,6 +10,7 @@ import {
   Calendar, MapPin,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import RegisterSW from "@/components/RegisterSW";
 
 type Tab = "stats" | "gallery" | "testimonials" | "submissions" | "events";
 type Stat = { id: number; label: string; value: string };
@@ -20,7 +21,7 @@ type HelpRequest = { id: number; patient_name: string; guardian_name: string; ph
 type EventItem = { id: number; title: string; description: string; location: string; event_date: string; event_time: string; image_url: string; latitude?: number | null; longitude?: number | null };
 
 // 👇 Apna WhatsApp group invite link yahan daalo
-const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/Lbk*TljdfNliFNytt9Thr";
+const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/your-group-invite-code";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -55,6 +56,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[#FDF8F2]">
+      <RegisterSW />
       <header className="bg-white border-b border-orange-100 px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
         <div className="flex items-center gap-3">
           <img src="/images/logo.png" alt="Logo" className="h-10 w-10 object-contain rounded-full" />
@@ -140,7 +142,7 @@ function StatsEditor() {
     <div className="space-y-4">
       <div className="mb-6">
         <h2 className="text-2xl font-bold">Edit Stats</h2>
-        <p className="text-gray-500 text-sm mt-1">These numbers show up live in the Hero section and the Stats section.</p>
+        <p className="text-gray-500 text-sm mt-1">Yeh numbers Hero section aur Stats section mein live dikhte hain.</p>
       </div>
 
       {stats.map((stat) => (
@@ -231,7 +233,7 @@ function GalleryEditor() {
     <div>
       <div className="mb-6">
         <h2 className="text-2xl font-bold">Manage Gallery</h2>
-        <p className="text-gray-500 text-sm mt-1">Upload images — they will automatically show up in the gallery on the website.</p>
+        <p className="text-gray-500 text-sm mt-1">Images upload karo — website pe gallery mein automatically dikhenge.</p>
       </div>
 
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 items-start md:items-center">
@@ -343,7 +345,7 @@ function TestimonialsEditor() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold">Manage Testimonials</h2>
-          <p className="text-gray-500 text-sm mt-1">Add or delete patient stories.</p>
+          <p className="text-gray-500 text-sm mt-1">Patient stories add ya delete karo.</p>
         </div>
         <button onClick={() => setAdding(true)}
           className="flex items-center gap-2 bg-orange-600 text-white px-5 py-3 rounded-xl hover:bg-orange-700 transition">
@@ -396,7 +398,7 @@ function TestimonialsEditor() {
                 </button>
               )}
             </div>
-            <p className="text-xs text-gray-400 mt-2">Optional — you can skip it, the default image will be used.</p>
+            <p className="text-xs text-gray-400 mt-2">Optional — chhod sakte ho, default image use ho jaayegi.</p>
           </div>
 
           <div className="flex gap-3 pt-2">
@@ -415,7 +417,7 @@ function TestimonialsEditor() {
       <div className="space-y-4">
         {items.length === 0 && (
           <div className="bg-white rounded-2xl p-10 text-center text-gray-400 border border-dashed border-gray-200">
-            There are no testimonials yet. Add one using 'Add Story'.
+            Koi testimonial nahi hai abhi. "Add Story" se add karo.
           </div>
         )}
         {items.map((item) => (
@@ -536,7 +538,7 @@ Seva Hi Pooja Hai`;
     <div>
       <div className="mb-6">
         <h2 className="text-2xl font-bold">Form Submissions</h2>
-        <p className="text-gray-500 text-sm mt-1">Volunteer applications and patient help requests will be shown here.</p>
+        <p className="text-gray-500 text-sm mt-1">Volunteer applications aur patient help requests yahan dikhenge.</p>
       </div>
 
       <div className="flex gap-3 mb-6">
@@ -569,7 +571,7 @@ Seva Hi Pooja Hai`;
         <div className="space-y-4">
           {helpRequests.length === 0 && (
             <div className="bg-white rounded-2xl p-10 text-center text-gray-400 border border-dashed border-gray-200">
-              No help request has come in yet.
+              Koi help request abhi tak nahi aaya.
             </div>
           )}
 
@@ -643,10 +645,17 @@ Seva Hi Pooja Hai`;
       {/* VOLUNTEER APPLICATIONS */}
       {subTab === "volunteers" && (
         <div className="space-y-4">
+          {/* Setup reminder */}
+          {WHATSAPP_GROUP_LINK.includes("your-group-invite-code") && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 text-sm text-yellow-800">
+              ⚠️ <strong>Setup pending:</strong> Apna WhatsApp group invite link <code>admin-dashboard.tsx</code> ke top mein <code>WHATSAPP_GROUP_LINK</code> variable mein daalo.
+              Group banao → "Invite via link" se link copy karo.
+            </div>
+          )}
 
           {volunteers.length === 0 && (
             <div className="bg-white rounded-2xl p-10 text-center text-gray-400 border border-dashed border-gray-200">
-              No volunteer application has come in yet.
+              Koi volunteer application abhi tak nahi aaya.
             </div>
           )}
 
@@ -779,7 +788,7 @@ function EventsEditor() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold">Manage Events & Camps</h2>
-          <p className="text-gray-500 text-sm mt-1">Add upcoming medical camps and activities — they will automatically show up on the website.</p>
+          <p className="text-gray-500 text-sm mt-1">Upcoming medical camps aur activities add karo — website pe automatically dikhenge.</p>
         </div>
         <button onClick={() => setAdding(true)}
           className="flex items-center gap-2 bg-orange-600 text-white px-5 py-3 rounded-xl hover:bg-orange-700 transition">
@@ -832,8 +841,8 @@ function EventsEditor() {
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white" />
             </div>
             <p className="text-xs text-gray-500 mt-2">
-              How to get coordinates: Open <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" className="text-orange-600 underline">Google Maps</a>
-              → right-click on the location → click on coordinates (they will be copied) → paste them here (latitude and longitude in separate boxes).
+              Coordinates kaise milein: <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" className="text-orange-600 underline">Google Maps</a> kholo →
+              location pe right-click karo → coordinates pe click karo (copy ho jaayega) → yahan paste karo (latitude, longitude alag-alag boxes mein).
             </p>
 
             {form.latitude && form.longitude && (
@@ -894,7 +903,7 @@ function EventsEditor() {
       <div className="space-y-3 mb-8">
         {upcoming.length === 0 && (
           <div className="bg-white rounded-2xl p-8 text-center text-gray-400 border border-dashed border-gray-200">
-            There are no upcoming events. Add one using 'Add Event'.
+            Koi upcoming event nahi hai. "Add Event" se add karo.
           </div>
         )}
         {upcoming.map((ev) => (
